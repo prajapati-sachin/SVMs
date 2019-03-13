@@ -70,6 +70,11 @@ def guassian_kernel(x,y):
 			tempmat[j][i] = tempmat[i][j]
 	return tempmat
 
+def guas(x,z):
+	normsq = (la.norm(np.array(x)- np.array(z)))
+	return math.exp((-1)*((normsq**2)*(gamma)))
+			
+
 # alpha_count = 10
 #######################################################
 q1 = np.ones((alpha_count, 1))*-1
@@ -81,8 +86,8 @@ q1 = np.ones((alpha_count, 1))*-1
 # 		P1[j][i] = P1[i][j]
 matXq1 = np.array(Xq1)
 matYq1 = np.array([Yq1])
-P1 = linear_kernel(matXq1, matXq1)
-# P1 = guassian_kernel(matXq1, matXq1)
+# P1 = linear_kernel(matXq1, matXq1)
+P1 = guassian_kernel(matXq1, matXq1)
 P1 = P1*((matYq1.transpose()).dot(matYq1))
 # print(matY)
 
@@ -160,7 +165,7 @@ matYq1_test = np.array([Yq1_test]).transpose()
 # 		maxlist.append(Wq1.transpose().dot(matXq1[i]))
 
 # bstar = (max(maxlist)+ min(minlist))*(-0.5)
-# print(bstar) 
+# print("B's", bstar, bq1) 
 
 
 # print(Wq1)
@@ -168,6 +173,37 @@ matYq1_test = np.array([Yq1_test]).transpose()
 # print("Samples of b: ", bq1, bq2, bq3)
 
 predictionYq1 = matXq1_test.dot(Wq1)  + bq1
+
+predictionYq1_gaus = []
+
+# b_gaus = Yq1[SV[0]] - (Wq1.transpose().dot(matXq1[SV[0]]))
+
+temp_x_guas = []
+temp_alpha_y = []
+
+for j in range(len(SV)):
+	kernel = guas(Xq1[SV[j]], Xq1[SV[0]])
+	temp_x_guas.append(kernel)
+	temp_alpha_y.append(alphas_q1[SV[j]]*Yq1[SV[j]])
+
+temp_row = np.array([temp_x_guas])
+temp_col = np.array([temp_alpha_y]).transpose()
+b_gaus = Yq1[SV[0]] - temp_row.dot(temp_col) 
+print("b for guassian", b_gaus)
+
+
+for i in range(len(Yq1_test)):
+	x_guas = []
+	alpha_y = []
+	for j in range(len(SV)):
+		kernel = guas(Xq1[SV[j]], Xq1_test[i])
+		x_guas.append(kernel)
+		alpha_y.append(alphas_q1[SV[j]]*Yq1[SV[j]])
+	temp_row = np.array([x_guas])
+	temp_col = np.array([alpha_y]).transpose()
+	pred = temp_row.dot(temp_col) + b_gaus
+	predictionYq1_gaus.append(pred)
+
 
 count = 0
 for i in range(len(Yq1_test)):
@@ -179,21 +215,50 @@ for i in range(len(Yq1_test)):
 	if(pred==Yq1_test[i]):
 		count+=1
 
-print("Total correct: ", count)
+count_gaus = 0
+for i in range(len(Yq1_test)):
+	pred =0
+	if(predictionYq1_gaus[i]>=0):
+		pred = 1
+	else:
+		pred = -1
+	if(pred==Yq1_test[i]):
+		count_gaus+=1
+
+# print("Total correct: ", count)
+# print("Total test: ", len(Yq1_test))
+# print("Accuracy: ", count/len(Yq1_test))
+# print("No. of Support Vectors: ", len(SV))
+
+
+print("Total correct: ", count_gaus)
 print("Total test: ", len(Yq1_test))
-print("Accuracy: ", count/len(Yq1_test))
-
+print("Accuracy: ", count_gaus/len(Yq1_test))
 print("No. of Support Vectors: ", len(SV))
-
 
 x_svm, y_svm = Xq1, Yq1
 
 prob  = svm_problem(y_svm, x_svm)
-param = svm_parameter('-t 0 -c 1 -b 0')
-m = svm_train(prob, param)
-p_label, p_acc, p_val = svm_predict(Yq1_test, Xq1_test, m, '-b 0')
-print("Accuracy using LIBSVM: ", p_acc)
-# ACC, MSE, SCC = evaluations(y, p_label)
+param = svm_parameter('-t 2 -c 1 -b 0 -g 0.05 -q')
+m = svm_train(prob, param, '-q')
+p_label, p_acc, p_val = svm_predict(Yq1_test, Xq1_test, m, '-b 0 -q')
+# print("Accuracy using LIBSVM: ", p_acc)
+ACC, MSE, SCC = evaluations(Yq1_test, p_label)
+print("Accuracy using LIBSVM: ", ACC)
+alpha_libsvm = m.get_sv_coef()
+SV_indices = m.get_sv_indices()
+alpha_svm = []
+j=0
+for i in range(len(Yq1_test)):
+	if(i==SV_indices[j]):
+		alpha_svm.append(alpha_libsvm[j][0])
+		j+=1
+	else:
+		alpha_svm.append(0)
 
 
+# print(type(alpha_svm))
+# print(type(SV_indices))
+# print((alpha_svm))
+# print((SV_indices))
 
