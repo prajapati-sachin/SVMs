@@ -66,7 +66,7 @@ def guassian_kernel(x,y):
 	for i in range(alpha_count):
 		for j in range(i, alpha_count):
 			normsq = (la.norm(np.array(Xq1[i])- np.array(Xq1[j])))
-			tempmat[i][j] = math.exp((-1)*((normsq**2)*(gamma)))
+			tempmat[i][j] = np.exp((-1)*((normsq**2)*(gamma)))
 			tempmat[j][i] = tempmat[i][j]
 	return tempmat
 
@@ -202,18 +202,20 @@ for i in range(len(Yq1_test)):
 	temp_row = np.array([x_guas])
 	temp_col = np.array([alpha_y]).transpose()
 	pred = temp_row.dot(temp_col) + b_gaus
+	# print("Pred: ", pred)
+	# print("minus: ", pred-b_gaus)
 	predictionYq1_gaus.append(pred)
 
 
-count = 0
-for i in range(len(Yq1_test)):
-	pred =0
-	if(predictionYq1[i][0]>=0):
-		pred = 1
-	else:
-		pred = -1
-	if(pred==Yq1_test[i]):
-		count+=1
+# count = 0
+# for i in range(len(Yq1_test)):
+# 	pred =0
+# 	if(predictionYq1[i][0]>=0):
+# 		pred = 1
+# 	else:
+# 		pred = -1
+# 	if(pred==Yq1_test[i]):
+# 		count+=1
 
 count_gaus = 0
 for i in range(len(Yq1_test)):
@@ -227,13 +229,13 @@ for i in range(len(Yq1_test)):
 
 # print("Total correct: ", count)
 # print("Total test: ", len(Yq1_test))
-# print("Accuracy: ", count/len(Yq1_test))
+# print("Accuracy: ", count/len(Yq1_test)*100)
 # print("No. of Support Vectors: ", len(SV))
 
 
 print("Total correct: ", count_gaus)
 print("Total test: ", len(Yq1_test))
-print("Accuracy: ", count_gaus/len(Yq1_test))
+print("Accuracy using Guassian Kernel: ", (count_gaus/len(Yq1_test))*100)
 print("No. of Support Vectors: ", len(SV))
 
 x_svm, y_svm = Xq1, Yq1
