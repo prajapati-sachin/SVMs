@@ -75,6 +75,7 @@ if(part=="c"):
 
 	prob  = svm_problem(y_svm, x_svm)
 	param = svm_parameter('-t 2 -c 1 -b 0 -g 0.05 -q')
+	# param = svm_parameter('-t 0 -c 1 -b 0 -q')
 	m = svm_train(prob, param, '-q')
 	p_label, p_acc, p_val = svm_predict(Yq1_test, Xq1_test, m, '-b 0 -q')
 	# print("Accuracy using LIBSVM: ", p_acc)
@@ -82,11 +83,25 @@ if(part=="c"):
 	print("Accuracy using LIBSVM: ", ACC)
 	alpha_libsvm = m.get_sv_coef()
 	SV_indices = m.get_sv_indices()
+	print("No. of Support Vectors: ", len(SV_indices))
 	alpha_svm = []
 	j=0
-	for i in range(len(Yq1_test)):
-		if(i<len(SV_indices) and i==SV_indices[j]):
+	for i in range(len(Yq1)):
+		if(j<len(SV_indices) and i==SV_indices[j]):
 			alpha_svm.append(alpha_libsvm[j][0])
 			j+=1
 		else:
 			alpha_svm.append(0)
+
+	# print(alpha_svm)
+	# print(len(alpha_svm))
+
+	matXq1 = np.array(Xq1)
+	matYq1 = np.array([Yq1])	
+	matAplha = np.array([alpha_svm])
+
+	Wq1 = (matXq1.transpose()).dot((matAplha.transpose())*(matYq1.transpose()))
+	bq1 = Yq1[SV_indices[0]] - (Wq1.transpose().dot(matXq1[SV_indices[0]])) 
+	# print(Wq1)	
+	# print(bq1)
+

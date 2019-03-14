@@ -1,39 +1,27 @@
 --------------------Binary Classification(between 5 & 6)---------------------------------------------------
-
-sachin@sachin-Lenovo-ideapad-510-15IKB:~/Desktop/SEM 6/COL774/A2/p2$ python3 svm.py as as a
-Input done, Time taken 2.67040753364563
-Matrices Made, Time taken 2.2218096256256104
-Solved, Time taken 145.09480786323547
-Total correct:  1800
-Total test:  1850
-Accuracy using Linear kernel:  97.2972972972973
-No. of Support Vectors:  233
-
-sachin@sachin-Lenovo-ideapad-510-15IKB:~/Desktop/SEM 6/COL774/A2/p2$ python3 svm.py as as b
-Input done, Time taken 2.641641616821289
-Matrices Made, Time taken 442.5074303150177
-Solved, Time taken 91.42077660560608
-Total correct:  1835
-Total test:  1850
-Accuracy using Guassian Kernel:  99.1891891891892
-No. of Support Vectors:  1520
-
-sachin@sachin-Lenovo-ideapad-510-15IKB:~/Desktop/SEM 6/COL774/A2/p2$ python3 svm.py as as c
-Input done, Time taken 2.6330132484436035
-Accuracy using LIBSVM:  99.1891891891892
-
+1) svm1a.txt
 --------------------------------------------------------------------------------------------------------------
+2) svm1b.txt
+--------------------------------------------------------------------------------------------------------------
+3) svm1c.txt
+
+
+
+
+
 --------------------MultiClass Classification-----------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------
 1)
+
 --------------------------------------------------------------------------------------------------------------
 2)
 Input done, Time taken(sec) 9
 Training, Time taken using LIBSVM 216
 Accuracy using LIBSVM on multiclass(on test data):  97.23
 Accuracy using LIBSVM on multiclass(on training data):  99.92
+
 --------------------------------------------------------------------------------------------------------------
 3)
+
 
 --------------------------------------------------------------------------------------------------------------
 4)

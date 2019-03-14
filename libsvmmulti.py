@@ -13,8 +13,8 @@ import random
 # X_test = []
 # Y_test = []
 
-# train = sys.argv[1]
-# test = sys.argv[2]
+train = sys.argv[1]
+test = sys.argv[2]
 # part = sys.argv[3]
 
 # time_gap = float(sys.argv[4])

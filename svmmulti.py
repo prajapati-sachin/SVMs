@@ -7,13 +7,19 @@ from numpy import linalg as la
 import math
 import sklearn.metrics
 from sklearn.metrics import f1_score, confusion_matrix 
+import sys
 
-# from svmutil import *
 
-# X = []
-# Y = []
-# X_test = []
-# Y_test = []
+train = sys.argv[1]
+test = sys.argv[2]
+partc = sys.argv[3]
+
+
+train = "mnist/train.csv"
+test = "mnist/test.csv"
+
+
+
 
 X = [[],[],[],[],[],[],[],[],[],[]]
 # Y = [[],[],[],[],[],[],[],[],[],[]]
@@ -207,7 +213,7 @@ prediction_test = []
 
 # new_confu = confusion_matrix(actual_value, predicted_value)
 # for i in range(len(Y_test)):
-for i in range(3000):
+for i in range(1500):
 	score = np.zeros(10)
 	for k in range(len(combs)):
 		# print("Classifier", k)
@@ -239,7 +245,7 @@ for i in range(3000):
 
 count_test = 0
 # for i in range(len(Y_test)):
-for i in range(3000):
+for i in range(1500):
 	pred =0
 	if(prediction_test[i]==Y_test[i]):
 		count_test+=1
@@ -247,18 +253,19 @@ for i in range(3000):
 
 print("Total correct(test data): ", count_test)
 # print("Total no.: ", len(Y_test))
-print("Total no.: ", 3000)
-print("Accuracy using Guassian Kernel(test data): ", (count_test/3000)*100)
+print("Total no.: ", 1500)
+print("Accuracy using Guassian Kernel(test data): ", (count_test/1500)*100)
 
-confu_test = confusion_matrix(Y_test[0:3000], prediction_test)
-print("Confusion Matrix for test data:")
-print(confu_test)
+if partc == "c":
+	confu_test = confusion_matrix(Y_test[0:1500], prediction_test)
+	print("Confusion Matrix for test data:")
+	print(confu_test)
 
 prediction_train = []
 
 
 # for i in range(len(Y_train)):
-for i in range(5000):
+for i in range(1500):
 	score = np.zeros(10)
 	for k in range(len(combs)):
 		# print("Classifier", k)
@@ -290,7 +297,7 @@ for i in range(5000):
 
 count_train = 0
 # for i in range(len(Y_train)):
-for i in range(5000):
+for i in range(1500):
 	pred =0
 	if(prediction_train[i]==Y_train[i]):
 		count_train+=1
@@ -298,9 +305,10 @@ for i in range(5000):
 
 print("Total correct(train data): ", count_train)
 # print("Total no.: ", len(Y_train))
-print("Total no.: ", 5000)
-print("Accuracy using Guassian Kernel(train data): ", (count_train/5000)*100)
+print("Total no.: ", 1500)
+print("Accuracy using Guassian Kernel(train data): ", (count_train/1500)*100)
 
-confu_train = confusion_matrix(Y_train[0:5000], prediction_train)
-print("Confusion Matrix for train data:")
-print(confu_train)
+if partc == "c":
+	confu_train = confusion_matrix(Y_train[0:1500], prediction_train)
+	print("Confusion Matrix for train data:")
+	print(confu_train)

@@ -135,7 +135,7 @@ if(part=="a"):
 elif(part=="b"):
 	# P1 = guassian_kernel(matXq1, matXq1)
 	P1 = sklearn.metrics.pairwise.rbf_kernel(Xq1, Xq1, gamma=0.05)
-	
+
 P1 = P1*((matYq1.transpose()).dot(matYq1))
 # print(matY)
 
@@ -197,29 +197,56 @@ for i in range(alphas_q1.shape[0]):
 Wq1 = (matXq1.transpose()).dot(alphas_q1*(matYq1.transpose()))
 bq1 = Yq1[SV[0]] - (Wq1.transpose().dot(matXq1[SV[0]])) 
 
+# print("w")
+# print(Wq1)
+# print("b")
+# print(bq1)
+print(SV)
+
 matXq1_test = np.array(Xq1_test)
 matYq1_test = np.array([Yq1_test]).transpose()
 
+matXq1 = np.array(Xq1)
+matYq1 = np.array([Yq1]).transpose()
+
+
 if(part=="a"):
-	predictionYq1 = matXq1_test.dot(Wq1)  + bq1
+	predictionYq1_test = matXq1_test.dot(Wq1)  + bq1
+	predictionYq1_train = matXq1.dot(Wq1)  + bq1
 
-
-	count = 0
+	count_test = 0
 	for i in range(len(Yq1_test)):
 		pred =0
-		if(predictionYq1[i][0]>=0):
+		if(predictionYq1_test[i][0]>=0):
 			pred = 1
 		else:
 			pred = -1
 		if(pred==Yq1_test[i]):
-			count+=1
+			count_test+=1
 
 
-	print("Total correct: ", count)
-	print("Total test: ", len(Yq1_test))
-	print("Accuracy using Linear kernel: ", count/len(Yq1_test)*100)
+	# count_train = 0
+	# for i in range(len(Yq1)):
+	# 	pred =0
+	# 	if(predictionYq1_train[i][0]>=0):
+	# 		pred = 1
+	# 	else:
+	# 		pred = -1
+	# 	if(pred==Yq1[i]):
+	# 		count_train+=1
+
+
 	print("No. of Support Vectors: ", len(SV))
 
+	print("Total correct(in test): ", count_test)
+	print("Total test(in test): ", len(Yq1_test))
+	print("Accuracy using Linear kernel(test set): ", count_test/len(Yq1_test)*100)
+
+
+	# print("Total correct(in train): ", count_train)
+	# print("Total test(in train): ", len(Yq1))
+	# print("Accuracy using Linear kernel(training set): ", count_train/len(Yq1)*100)
+	# print("No. of Support Vectors: ", len(SV))
 
 if(part=="b"):
 	predictionYq1_gaus = []
