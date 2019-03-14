@@ -70,29 +70,29 @@ start2 = time.time()
 alpha_count = len(Xq1)
 
 
-if(part=="c"):
-	x_svm, y_svm = Xq1, Yq1
+# if(part=="c"):
+# 	x_svm, y_svm = Xq1, Yq1
 
-	prob  = svm_problem(y_svm, x_svm)
-	param = svm_parameter('-t 2 -c 1 -b 0 -g 0.05 -q')
-	m = svm_train(prob, param, '-q')
-	p_label, p_acc, p_val = svm_predict(Yq1_test, Xq1_test, m, '-b 0 -q')
-	# print("Accuracy using LIBSVM: ", p_acc)
-	ACC, MSE, SCC = evaluations(Yq1_test, p_label)
-	print("Accuracy using LIBSVM: ", ACC)
-	alpha_libsvm = m.get_sv_coef()
-	SV_indices = m.get_sv_indices()
-	alpha_svm = []
-	j=0
-	for i in range(len(Yq1_test)):
-		if(i==SV_indices[j]):
-			alpha_svm.append(alpha_libsvm[j][0])
-			j+=1
-		else:
-			alpha_svm.append(0)
+# 	prob  = svm_problem(y_svm, x_svm)
+# 	param = svm_parameter('-t 2 -c 1 -b 0 -g 0.05 -q')
+# 	m = svm_train(prob, param, '-q')
+# 	p_label, p_acc, p_val = svm_predict(Yq1_test, Xq1_test, m, '-b 0 -q')
+# 	# print("Accuracy using LIBSVM: ", p_acc)
+# 	ACC, MSE, SCC = evaluations(Yq1_test, p_label)
+# 	print("Accuracy using LIBSVM: ", ACC)
+# 	alpha_libsvm = m.get_sv_coef()
+# 	SV_indices = m.get_sv_indices()
+# 	alpha_svm = []
+# 	j=0
+# 	for i in range(len(Yq1_test)):
+# 		if(i==SV_indices[j]):
+# 			alpha_svm.append(alpha_libsvm[j][0])
+# 			j+=1
+# 		else:
+# 			alpha_svm.append(0)
 
-	exit()
-	# return 
+# 	# exit(0)
+# 	# return 
 
 # print(len(Xq1))
 # print(len(Yq1))
