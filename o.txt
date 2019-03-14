@@ -21,3 +21,23 @@ No. of Support Vectors:  1520
 sachin@sachin-Lenovo-ideapad-510-15IKB:~/Desktop/SEM 6/COL774/A2/p2$ python3 svm.py as as c
 Input done, Time taken 2.6330132484436035
 Accuracy using LIBSVM:  99.1891891891892
+
+
+
+
+
+
+Cost used:  1e-05
+Accuracy using LIBSVM:  8.85
+1
+Cost used:  0.001
+Accuracy using LIBSVM:  8.85
+2
+Cost used:  1
+Accuracy using LIBSVM:  96.95
+3
+Cost used:  5
+Accuracy using LIBSVM:  97.0
+4
+Cost used:  10
+Accuracy using LIBSVM:  97.0

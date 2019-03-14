@@ -5,7 +5,8 @@ import csv
 import time
 from numpy import linalg as la
 import math
-from svmutil import *
+import sklearn.metrics
+# from svmutil import *
 
 # X = []
 # Y = []
@@ -92,7 +93,7 @@ for k in range(len(combs)):
 	# print(len(X[num2]))
 	# print(type(X[num2]))
 	Xq1 = X[num1] + X[num2]
-	Yq1 = ([1]*(len(X[num1]))) + ([-1]*(len(X[num1])))
+	Yq1 = ([1]*(len(X[num1]))) + ([-1]*(len(X[num2])))
 	# print(len(Xq1))
 	# print(len(Yq1))
 	# print((Xq1))
@@ -110,8 +111,9 @@ for k in range(len(combs)):
 	# 		P1[j][i] = P1[i][j]
 	matXq1 = np.array(Xq1)
 	matYq1 = np.array([Yq1])
-	P1 = linear_kernel(matXq1, matXq1)
+	# P1 = linear_kernel(matXq1, matXq1)
 	# P1 = guassian_kernel(matXq1, matXq1)
+	P1 = sklearn.metrics.pairwise.rbf_kernel(Xq1, Xq1, gamma=0.05)
 	P1 = P1*((matYq1.transpose()).dot(matYq1))
 	# print(matY)
 
@@ -181,12 +183,13 @@ for k in range(len(combs)):
 
 
 
+print(combs[35])
 print(len(alpha_combs))
-print((alpha_combs[0][0]))
+print((alpha_combs[35][0]))
 print(len(SV_combs))
-print(len(SV_combs[0]))
+print(len(SV_combs[35]))
 print(len(b_combs))
-print(b_combs[0])
+print(b_combs[35])
 
 end3 = time.time()
 print("Training, Time taken", end3-start3)
@@ -206,8 +209,8 @@ print("Training, Time taken", end3-start3)
 # bq3 = Yq1[3535] - matXq1[3535].dot(Wq1) 
 
 
-matX_test = np.array(X_test)
-matY_test = np.array([Y_test]).transpose()
+# matX_test = np.array(X_test)
+# matY_test = np.array([Y_test]).transpose()
 
 # minlist = []
 # maxlist = []
@@ -246,29 +249,34 @@ predictionYq1_gaus = []
 
 
 
-for i in range(len(Y_test)):
+# for i in range(len(Y_test)):
+for i in range(100):
 	score = np.zeros(10)
 	for k in range(len(combs)):
+		# print("Classifier", k)
 		num1 = combs[k][0]
 		num2 = combs[k][1]
 		Xq1 = X[num1] + X[num2]
-		Yq1 = ([1]*(len(X[num1]))) + ([-1]*(len(X[num1])))
+		Yq1 = ([1]*(len(X[num1]))) + ([-1]*(len(X[num2])))
 		x_guas = []
 		alpha_y = []
 		for j in range(len(SV_combs[k])):
-			kernel = guas(Xq1[SV[j]], X_test[i])
+			kernel = guas(Xq1[SV_combs[k][j]], X_test[i])
 			x_guas.append(kernel)
-			alpha_y.append(alpha_combs[k][SV[j]]*Yq1[SV[j]])
+			alpha_y.append(alpha_combs[k][SV_combs[k][j]]*Yq1[SV_combs[k][j]])
 		temp_row = np.array([x_guas])
 		temp_col = np.array([alpha_y]).transpose()
-		pred = temp_row.dot(temp_col) + b_gaus
+		pred = temp_row.dot(temp_col) + b_combs[k]
 		if(pred>=0):
 			winner = num1
 		else:
 			winner = num2
-		score[num]+=1
+		score[winner]+=1
 
-	predicted = np.argmax(score)
+	predicted = np.argmax(score)	
+	# print("Testing :", i, "Num=", Y_test[i])
+	print("Testing :", i, "Num=", Y_test[i], "Predicted: ", predicted)
+	print("Scores", score)
 	predictionYq1_gaus.append(predicted)
 
 
@@ -283,13 +291,10 @@ for i in range(len(Y_test)):
 # 		count+=1
 
 count_gaus = 0
-for i in range(len(Y_test)):
+# for i in range(len(Y_test)):
+for i in range(100):
 	pred =0
-	if(predictionYq1_gaus[i]>=0):
-		pred = 1
-	else:
-		pred = -1
-	if(pred==Yq1_test[i]):
+	if(predictionYq1_gaus[i]==Y_test[i]):
 		count_gaus+=1
 
 # print("Total correct: ", count)
@@ -299,8 +304,8 @@ for i in range(len(Y_test)):
 
 
 print("Total correct: ", count_gaus)
-print("Total test: ", len(Yq1_test))
-print("Accuracy using Guassian Kernel: ", (count_gaus/len(Yq1_test))*100)
+print("Total test: ", len(Y_test))
+print("Accuracy using Guassian Kernel: ", (count_gaus/len(Y_test))*100)
 # print("No. of Support Vectors: ", len(SV))
 
 # x_svm, y_svm = Xq1, Yq1

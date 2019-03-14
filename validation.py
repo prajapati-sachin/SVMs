@@ -23,15 +23,15 @@ import random
 
 X = []
 Y = []
-X_test = []
-Y_test = []
+# X_test = []
+# Y_test = []
 
 # num = 5
 
 start1 = time.time()
 
 train = "mnist/train.csv"
-test = "mnist/test.csv"
+# test = "mnist/test.csv"
 
 with open(train) as fileX:
 	x_reader = csv.reader(fileX)
@@ -43,14 +43,14 @@ with open(train) as fileX:
 		X.append(temp)
 
 
-with open(test) as fileX:
-	x_reader = csv.reader(fileX)
-	for row in x_reader:
-		temp = []
-		for i in range(784):
-			temp.append(float(row[i])/255)
-		Y_test.append(float(row[784]))
-		X_test.append(temp)
+# with open(test) as fileX:
+# 	x_reader = csv.reader(fileX)
+# 	for row in x_reader:
+# 		temp = []
+# 		for i in range(784):
+# 			temp.append(float(row[i])/255)
+# 		Y_test.append(float(row[784]))
+# 		X_test.append(temp)
 
 end1 = time.time()
 print("Input done, Time taken(sec)", int(end1-start1))
@@ -66,14 +66,45 @@ C = ['-t 2 -c 1e-5 -b 0 -g 0.05 -q',
 	 '-t 2 -c 10   -b 0 -g 0.05 -q' ]
 
 
+test = random.sample(range(20000), 2000)
+test.sort()
+# print(len(test))
+# print(len(X))
+
+validationX = []
+validationY = []
+testX = []
+testY = []
+
+j=0
+
+for i in range(len(X)):
+	if(j<len(test) and i==test[j]):
+		testX.append(X[i])
+		testY.append(Y[i])
+		j+=1
+	else:
+		validationX.append(X[i])
+		validationY.append(Y[i])
+		
+
+costs = [1e-5, 1e-3, 1, 5, 10]
+acc = []
+
+print(len(validationX))
+print(len(testX))
+
 for i in range(5):
-	prob  = svm_problem(Y, X)
-	param = svm_parameter('-t 2 -c 1 -b 0 -g 0.05 -q')
+	print(i)	
+	prob  = svm_problem(validationY, validationX)
+	param = svm_parameter(C[i])
 	m = svm_train(prob, param, '-q')
-	p_label, p_acc, p_val = svm_predict(Y_test, X_test, m, '-b 0 -q')
+	p_label, p_acc, p_val = svm_predict(testY, testX, m, '-b 0 -q')
 	# print("Accuracy using LIBSVM: ", p_acc)
-	ACC, MSE, SCC = evaluations(Y_test, p_label)
+	ACC, MSE, SCC = evaluations(testY, p_label)
+	print("Cost used: ", costs[i])
 	print("Accuracy using LIBSVM: ", ACC)
+	acc.append(ACC)
 	# alpha_libsvm = m.get_sv_coef()
 	# SV_indices = m.get_sv_indices()
 	# alpha_svm = []

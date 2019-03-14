@@ -5,8 +5,9 @@ import csv
 import time
 from numpy import linalg as la
 import math
-from svmutil import *
+# from svmutil import *
 import sys
+import sklearn.metrics
 # X = []
 # Y = []
 # X_test = []
@@ -132,8 +133,9 @@ matYq1 = np.array([Yq1])
 if(part=="a"):
 	P1 = linear_kernel(matXq1, matXq1)
 elif(part=="b"):
-	P1 = guassian_kernel(matXq1, matXq1)
-
+	# P1 = guassian_kernel(matXq1, matXq1)
+	P1 = sklearn.metrics.pairwise.rbf_kernel(Xq1, Xq1, gamma=0.05)
+	
 P1 = P1*((matYq1.transpose()).dot(matYq1))
 # print(matY)
 

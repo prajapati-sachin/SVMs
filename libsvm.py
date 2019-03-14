@@ -85,7 +85,7 @@ if(part=="c"):
 	alpha_svm = []
 	j=0
 	for i in range(len(Yq1_test)):
-		if(i==SV_indices[j]):
+		if(i<len(SV_indices) and i==SV_indices[j]):
 			alpha_svm.append(alpha_libsvm[j][0])
 			j+=1
 		else:
