@@ -264,7 +264,7 @@ for i in range(len(Y_test)):
 		pred = temp_row.dot(temp_col) + b_gaus
 		if(pred>=0):
 			winner = num1
-		else
+		else:
 			winner = num2
 		score[num]+=1
 
