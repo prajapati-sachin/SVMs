@@ -40,6 +40,7 @@ print(combs)
 x = [1,2,3]
 y = [1,4, 5, 6, 2,3]
 y.sort()
+print(y[0:3])
 
 # prin/t(y)
 # print(np.argmax(x))

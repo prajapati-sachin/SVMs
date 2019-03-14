@@ -1,3 +1,4 @@
+export PYTHONPATH="/home/sachin/libsvm-3.23/python:${PYTHONPATH}"
 #!/bin/bash
 a=1
 b=2

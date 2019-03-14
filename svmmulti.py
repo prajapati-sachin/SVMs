@@ -6,6 +6,8 @@ import time
 from numpy import linalg as la
 import math
 import sklearn.metrics
+from sklearn.metrics import f1_score, confusion_matrix 
+
 # from svmutil import *
 
 # X = []
@@ -15,6 +17,8 @@ import sklearn.metrics
 
 X = [[],[],[],[],[],[],[],[],[],[]]
 # Y = [[],[],[],[],[],[],[],[],[],[]]
+X_train = []
+Y_train = []
 X_test = []
 Y_test = []
 
@@ -34,6 +38,8 @@ with open("mnist/train.csv") as fileX:
 		for i in range(784):
 			temp.append(float(row[i])/255)
 		X[int(row[784])].append(temp)
+		X_train.append(temp)
+		Y_train.append(float(row[784]))
 		# Y[float(row[784])].append(temp)
 		# Y.append(float(row[784]))
 		# X.append(temp)
@@ -85,6 +91,8 @@ alpha_combs = []
 SV_combs = []
 b_combs = []
 
+
+start3 = time.time()
 for k in range(len(combs)):
 	num1 = combs[k][0]
 	num2 = combs[k][1]
@@ -150,7 +158,6 @@ for k in range(len(combs)):
 
 	solvers.options["show_progress"] = False
 
-	start3 = time.time()
 	solution = solvers.qp(P,q,G,h,A,b)
 	# print(solution['status'])
 	# print(solution['x'])
@@ -183,74 +190,24 @@ for k in range(len(combs)):
 
 
 
-print(combs[35])
-print(len(alpha_combs))
-print((alpha_combs[35][0]))
-print(len(SV_combs))
-print(len(SV_combs[35]))
-print(len(b_combs))
-print(b_combs[35])
+# print(combs[35])
+# print(len(alpha_combs))
+# print((alpha_combs[35][0]))
+# print(len(SV_combs))
+# print(len(SV_combs[35]))
+# print(len(b_combs))
+# print(b_combs[35])
 
 end3 = time.time()
-print("Training, Time taken", end3-start3)
+print("Training, Time taken using CVXOPT", int(end3-start3))
 
-# print(len(Xq1))
-# print(matXq1.shape)
-# print(alphas_q1)
+prediction_test = []
 
+# prediction_train = []
 
-
-
-# Wq1 = (matXq1.transpose()).dot(alphas_q1*(matYq1.transpose()))
-# bq1 = Yq1[SV[0]] - (Wq1.transpose().dot(matXq1[SV[0]])) 
-
-# bq2 = Yq1[SV[100]] - (Wq1.transpose().dot(matXq1[SV[100]])) 
-# bq3 = Yq1[SV[200]] - (Wq1.transpose().dot(matXq1[SV[200]])) 
-# bq3 = Yq1[3535] - matXq1[3535].dot(Wq1) 
-
-
-# matX_test = np.array(X_test)
-# matY_test = np.array([Y_test]).transpose()
-
-# minlist = []
-# maxlist = []
-# for i in range(alpha_count):
-# 	if Yq1[i]==1:
-# 		minlist.append(Wq1.transpose().dot(matXq1[i]))
-# 	elif Yq1[i]==-1:
-# 		maxlist.append(Wq1.transpose().dot(matXq1[i]))
-
-# bstar = (max(maxlist)+ min(minlist))*(-0.5)
-# print("B's", bstar, bq1) 
-
-
-# print(Wq1)
-
-# print("Samples of b: ", bq1, bq2, bq3)
-
-# predictionYq1 = matXq1_test.dot(Wq1)  + bq1
-
-predictionYq1_gaus = []
-
-# b_gaus = Yq1[SV[0]] - (Wq1.transpose().dot(matXq1[SV[0]]))
-
-# temp_x_guas = []
-# temp_alpha_y = []
-
-# for j in range(len(SV)):
-# 	kernel = guas(Xq1[SV[j]], Xq1[SV[0]])
-# 	temp_x_guas.append(kernel)
-# 	temp_alpha_y.append(alphas_q1[SV[j]]*Yq1[SV[j]])
-
-# temp_row = np.array([temp_x_guas])
-# temp_col = np.array([temp_alpha_y]).transpose()
-# b_gaus = Yq1[SV[0]] - temp_row.dot(temp_col) 
-# print("b for guassian", b_gaus)
-
-
-
+# new_confu = confusion_matrix(actual_value, predicted_value)
 # for i in range(len(Y_test)):
-for i in range(100):
+for i in range(3000):
 	score = np.zeros(10)
 	for k in range(len(combs)):
 		# print("Classifier", k)
@@ -275,62 +232,75 @@ for i in range(100):
 
 	predicted = np.argmax(score)	
 	# print("Testing :", i, "Num=", Y_test[i])
-	print("Testing :", i, "Num=", Y_test[i], "Predicted: ", predicted)
-	print("Scores", score)
-	predictionYq1_gaus.append(predicted)
+	print("Testing-Test Data:", i, "Num=", Y_test[i], "Predicted: ", predicted)
+	# print("Scores", score)
+	prediction_test.append(predicted)
 
 
-# count = 0
-# for i in range(len(Yq1_test)):
-# 	pred =0
-# 	if(predictionYq1[i][0]>=0):
-# 		pred = 1
-# 	else:
-# 		pred = -1
-# 	if(pred==Yq1_test[i]):
-# 		count+=1
-
-count_gaus = 0
+count_test = 0
 # for i in range(len(Y_test)):
-for i in range(100):
+for i in range(3000):
 	pred =0
-	if(predictionYq1_gaus[i]==Y_test[i]):
-		count_gaus+=1
-
-# print("Total correct: ", count)
-# print("Total test: ", len(Yq1_test))
-# print("Accuracy: ", count/len(Yq1_test)*100)
-# print("No. of Support Vectors: ", len(SV))
+	if(prediction_test[i]==Y_test[i]):
+		count_test+=1
 
 
-print("Total correct: ", count_gaus)
-print("Total test: ", len(Y_test))
-print("Accuracy using Guassian Kernel: ", (count_gaus/len(Y_test))*100)
-# print("No. of Support Vectors: ", len(SV))
+print("Total correct(test data): ", count_test)
+# print("Total no.: ", len(Y_test))
+print("Total no.: ", 3000)
+print("Accuracy using Guassian Kernel(test data): ", (count_test/3000)*100)
 
-# x_svm, y_svm = Xq1, Yq1
+confu_test = confusion_matrix(Y_test[0:3000], prediction_test)
+print("Confusion Matrix for test data:")
+print(confu_test)
 
-# prob  = svm_problem(y_svm, x_svm)
-# param = svm_parameter('-t 2 -c 1 -b 0 -g 0.05 -q')
-# m = svm_train(prob, param, '-q')
-# p_label, p_acc, p_val = svm_predict(Yq1_test, Xq1_test, m, '-b 0 -q')
-# # print("Accuracy using LIBSVM: ", p_acc)
-# ACC, MSE, SCC = evaluations(Yq1_test, p_label)
-# print("Accuracy using LIBSVM: ", ACC)
-# alpha_libsvm = m.get_sv_coef()
-# SV_indices = m.get_sv_indices()
-# alpha_svm = []
-# j=0
-# for i in range(len(Yq1_test)):
-# 	if(i==SV_indices[j]):
-# 		alpha_svm.append(alpha_libsvm[j][0])
-# 		j+=1
-# 	else:
-# 		alpha_svm.append(0)
+prediction_train = []
 
 
-# print(type(alpha_svm))
-# print(type(SV_indices))
-# print((alpha_svm))
-# print((SV_indices))
+# for i in range(len(Y_train)):
+for i in range(5000):
+	score = np.zeros(10)
+	for k in range(len(combs)):
+		# print("Classifier", k)
+		num1 = combs[k][0]
+		num2 = combs[k][1]
+		Xq1 = X[num1] + X[num2]
+		Yq1 = ([1]*(len(X[num1]))) + ([-1]*(len(X[num2])))
+		x_guas = []
+		alpha_y = []
+		for j in range(len(SV_combs[k])):
+			kernel = guas(Xq1[SV_combs[k][j]], X_train[i])
+			x_guas.append(kernel)
+			alpha_y.append(alpha_combs[k][SV_combs[k][j]]*Yq1[SV_combs[k][j]])
+		temp_row = np.array([x_guas])
+		temp_col = np.array([alpha_y]).transpose()
+		pred = temp_row.dot(temp_col) + b_combs[k]
+		if(pred>=0):
+			winner = num1
+		else:
+			winner = num2
+		score[winner]+=1
 
+	predicted = np.argmax(score)	
+	# print("Testing :", i, "Num=", Y_test[i])
+	print("Testing-Train Data :", i, "Num=", Y_train[i], "Predicted: ", predicted)
+	# print("Scores", score)
+	prediction_train.append(predicted)
+
+
+count_train = 0
+# for i in range(len(Y_train)):
+for i in range(5000):
+	pred =0
+	if(prediction_train[i]==Y_train[i]):
+		count_train+=1
+
+
+print("Total correct(train data): ", count_train)
+# print("Total no.: ", len(Y_train))
+print("Total no.: ", 5000)
+print("Accuracy using Guassian Kernel(train data): ", (count_train/5000)*100)
+
+confu_train = confusion_matrix(Y_train[0:5000], prediction_train)
+print("Confusion Matrix for train data:")
+print(confu_train)
