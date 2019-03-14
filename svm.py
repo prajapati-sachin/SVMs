@@ -21,6 +21,11 @@ num = 5
 
 start1 = time.time()
 
+combs = []
+for i in range(10):
+	for j in range(i+1,10):
+		combs.append(i,j)
+
 with open("mnist/train.csv") as fileX:
 	x_reader = csv.reader(fileX)
 	for row in x_reader:
